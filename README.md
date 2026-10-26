@@ -1,5 +1,7 @@
 # Redridge Recipe Planner
 
+**Author:** Babuni.dev
+
 A WoW **Forever (1.60.1)** addon for planning recipes sold for **Merchant's Favor** at the Alliance **Azeroth Commerce Authority** in Redridge Mountains and the Horde **Durotar Supply and Logistics** camp.
 
 **Status:** 0.1.1 beta. Code and initial recipe catalog are published; **in-game testing is still required**.
