@@ -1,10 +1,10 @@
 # Redridge Recipe Planner
 
-**Author:** Babuni.dev
+**Developer and creative direction:** Babuni.dev · **Original-idea credit:** Danoozy (as recorded in the project's prior contributor instructions) · **License:** [MIT](LICENSE)
 
 A WoW **Forever (1.60.1)** addon for planning recipes sold for **Merchant's Favor** at the Alliance **Azeroth Commerce Authority** in Redridge Mountains and the Horde **Durotar Supply and Logistics** camp.
 
-**Status:** 0.1.1 beta. Code and initial recipe catalog are published; **in-game testing is still required**.
+**Status:** **0.1.1-beta**, first published in source on October 15, 2026. The 309-recipe catalog, planner code, automated Lua fixtures and GitHub Actions workflow are present; **in-game verification remains outstanding**. GitHub currently lists **no published releases or downloadable release assets**. This is a source repository, not a separately packaged release.
 
 ## Installation
 
@@ -20,6 +20,16 @@ A WoW **Forever (1.60.1)** addon for planning recipes sold for **Merchant's Favo
 4. Restart WoW, enable **Redridge Recipe Planner** at the AddOns screen, and type **`/rrp`**.
 
 The addon targets interface **16001**, corresponding to the observed Forever 1.60.1 beta. If an update changes the interface, check `/run print(select(4,GetBuildInfo()))` before changing the TOC.
+
+## How the planner handles evidence
+
+**Known is per character; reagent schematics are reusable account data.** The addon stores profiles keyed by its own current `GetRealmName() .. "-" .. UnitName("player")` expression inside account-wide `RRPDB.characters`. The profile contains that character's plan, filters, current profession, page, intermediate preference, and an independently scanned `known` table. `RRPDB.materials`, discovered vendor recipes, scroll IDs and trainer annotations are shared in the overall saved database. A schematic cached while viewing an **unlearned** recipe may be useful, but **does not mark that recipe as learned**.
+
+**Favor is paid per selected recipe, not per craft.** If you select one recipe and increase planned craft quantity from 1 to 3, its published Merchant's Favor price is included **once**, while its known reagent quantities are multiplied by **three**. Unknown Favor on newly discovered vendor items is flagged as unknown and is not quietly treated as zero. Current Favor totals are **purchase requirements**, not a wallet balance or proof you have paid.
+
+**Missing ingredients are not free.** Material calculations include only actual client-returned reagent schematics, preserve `incomplete` when a slot cannot be resolved, and report selected recipes with unknown ingredients separately. Optional intermediate expansion works only when there is a complete schematic for an intermediate recipe **known to that character**. The displayed owned quantity checks **bags only**, not a bank, guild bank, mail, auctions or other characters.
+
+**Trainer notes are not verification.** The “Mark trainer match” control stores a *user-supplied*, unverified note. The published catalog doesn't contain independently verified trainer duplicates. Similarly, the catalog is an October 15 **beta listing**, not authoritative current in-game vendor inventory; scanning a live vendor is the validation path.
 
 ## 0.1.1-beta fix
 
@@ -77,14 +87,23 @@ lua5.1 tests/ui.lua
 
 Do not rename the installed addon folder; its name must match `RedridgeRecipePlanner.toc`.
 
+## Provenance, licensing and test evidence
+
+The catalog's 309 baseline records (seven professions) are transcribed from the linked [WoW Professions' Merchant's Favor guide](https://www.wow-professions.com/forever/merchants-favor-durotar-supply-azeroth-commerce), consulted October 15, 2026. These are **beta vendor data**, not independently rechecked current values. The project's preceding [AGENTS.md](AGENTS.md) specifically preserved **Danoozy's original-idea credit** separately from **Babuni.dev's implementation and artistic direction**; the original exchange or first-hand account was not included in this source audit.
+
+The repository carries an explicit [MIT License](LICENSE) under **Babuni.dev's** copyright notice. Third-party vendor information and World of Warcraft client assets are not automatically covered by that code license.
+
+Automated [catalog](tests/catalog.lua), [planner logic](tests/core.lua) and [UI smoke](tests/ui.lua) fixtures are committed, and a [GitHub Actions Lua workflow](.github/workflows/lua.yml) is configured to run them and Lua 5.1 syntax checks. The fixture descriptions demonstrate *intended coverage*, but this documentation audit did **not** execute them, inspect their latest CI run, or launch a Forever client. No screenshots were included in the inspected tree.
+
 ## License
 
-See [LICENSE](LICENSE) in this repository.
+See the existing [MIT LICENSE](LICENSE).
 
 ## Development documentation
 
-- [Concept](CONCEPT.md) · [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md)
-- [Architecture](docs/ARCHITECTURE.md) · [Design evidence](docs/DECISIONS.md) · [Development journal](docs/DEVLOG.md)
-- [AI collaborator rules](AGENTS.md)
+- [Concept and collaboration origins](CONCEPT.md) · [Verification roadmap](ROADMAP.md) · [Git-based changelog](CHANGELOG.md)
+- [Technical architecture](docs/ARCHITECTURE.md) · [Interface design](docs/DESIGN.md) · [Recipe and data content](docs/CONTENT.md)
+- [Decisions and alternatives](docs/DECISIONS.md) · [Narrative development journal](docs/DEVLOG.md) · [Human–AI collaboration](docs/AI_COLLABORATION.md)
+- [Development and AI rules](AGENTS.md)
 
-The journal distinguishes source-based reconstruction, author direction, AI assistance, and independently verified behavior.
+The journal keeps user direction, Danoozy's recorded original-idea credit, Babuni.dev's creative/implementation work, source-backed iteration, AI documentation contributions, and test limitations distinct.
